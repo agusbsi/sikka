@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publikasi Harga Barang Pasar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+            padding: 1.5rem 1rem;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .filters {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-and-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            background-color: #f8fafc;
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .search-box-container {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            color: #64748b;
+            width: 16px;
+            height: 16px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: all 0.2s;
+            height: 32px;
+        }
+
+        .btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .filter-group label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.375rem 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+
+        th {
+            background-color: #f8fafc;
+            padding: 0.75rem;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .price-change {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .price-change.positive {
+            color: #16a34a;
+        }
+
+        .price-change.negative {
+            color: #dc2626;
+        }
+
+        .category-badge {
+            background-color: #f1f5f9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stock-status {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .stock-status.in-stock {
+            color: #16a34a;
+        }
+
+        .stock-status.low-stock {
+            color: #eab308;
+        }
+
+        .stock-status.out-stock {
+            color: #dc2626;
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #64748b;
+            font-size: 0.75rem;
+            background-color: white;
+            margin-top: 3rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .header-left {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .header-center {
+            text-align: center;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 900px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .search-and-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .buttons-container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+            
+            .header-left {
+                position: static;
+                transform: none;
+                margin-bottom: 1rem;
+            }
+            
+            .header-content {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 1rem;
+            }
+            
+            .header-center {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="index.html" class="btn-back">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Beranda
+                  </a>
+            </div>
+            <div class="header-center">
+                <h1>Publikasi Harga Barang Pasar</h1>
+                <p id="updateTime">Data harga di perbarui pada: Loading...</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="filters">
+            <div class="search-and-buttons">
+                <div class="search-box-container">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <input type="text" placeholder="Cari barang..." class="search-box">
+                </div>
+                <div class="buttons-container">
+                    <button class="btn btn-primary">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 10v12m0-12L8 6m4-6v12m0-12l4-4"/>
+                        </svg>
+                        PDF
+                    </button>
+                    <button class="btn btn-primary">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M4 4h16M4 8h16M4 12h16M4 16h16M4 20h16"/>
+                        </svg>
+                        Excel
+                    </button>
+                    <button class="btn btn-secondary">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M17 17h.01M17 21h.01M12 21h.01M7 21h.01M3 17h.01M3 12h.01M3 7h.01M7 3h.01M12 3h.01M17 3h.01M21 7h.01M21 12h.01M21 17h.01"/>
+                        </svg>
+                        Print
+                    </button>
+                </div>
+            </div>
+            
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="category">Kategori</label>
+                    <select id="category">
+                        <option value="">Semua Kategori</option>
+                        <option value="bahan-pokok">Bahan Pokok</option>
+                        <option value="sayuran">Sayuran</option>
+                        <option value="buah">Buah-buahan</option>
+                        <option value="daging">Daging & Ikan</option>
+                        <option value="bumbu">Bumbu Dapur</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="price-min">Harga Minimum</label>
+                    <input type="number" id="price-min" placeholder="Rp 0">
+                </div>
+                <div class="filter-group">
+                    <label for="price-max">Harga Maksimum</label>
+                    <input type="number" id="price-max" placeholder="Rp 1.000.000">
+                </div>
+                <div class="filter-group">
+                    <label for="price-change">Perubahan Harga</label>
+                    <select id="price-change">
+                        <option value="">Semua</option>
+                        <option value="increase">Kenaikan</option>
+                        <option value="decrease">Penurunan</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="location">Lokasi Pasar</label>
+                    <select id="location">
+                        <option value="">Semua Lokasi</option>
+                        <option value="pasar-a">Pasar Tradisional A</option>
+                        <option value="pasar-b">Pasar Modern B</option>
+                        <option value="pasar-c">Pasar Induk C</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Barang</th>
+                        <th>Kategori</th>
+                        <th>Harga Lama</th>
+                        <th>Harga Sekarang</th>
+                        <th>Presentase</th>
+                        <th>Stok</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Beras Merah Punel (5kg)</td>
+                        <td>
+                            <span class="category-badge">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M20 12v8H4v-8"/>
+                                    <path d="M12 3L4 12h16L12 3z"/>
+                                </svg>
+                                Bahan Pokok
+                            </span>
+                        </td>
+                        <td>Rp 10.000</td>
+                        <td>Rp 12.000</td>
+                        <td><span class="price-change positive">+20%</span></td>
+                        <td>
+                            <span class="stock-status in-stock">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M20 6L9 17l-5-5"/>
+                                </svg>
+                                Tersedia
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Cabai Merah Keriting</td>
+                        <td>
+                            <span class="category-badge">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
+                                    <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+                                </svg>
+                                Bumbu Dapur
+                            </span>
+                        </td>
+                        <td>Rp 100.000</td>
+                        <td>Rp 70.000</td>
+                        <td><span class="price-change negative">-30%</span></td>
+                        <td>
+                            <span class="stock-status low-stock">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M12 9v2m0 4h.01"/>
+                                    <path d="M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/>
+                                </svg>
+                                Stok Terbatas
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Daging Sapi Has Dalam</td>
+                        <td>
+                            <span class="category-badge">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M20 16s-3 3-8 3-8-3-8-3"/>
+                                    <path d="M4 8s3-3 8-3 8 3 8 3"/>
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                </svg>
+                                Daging & Ikan
+                            </span>
+                        </td>
+                        <td>Rp 130.000</td>
+                        <td>Rp 145.000</td>
+                        <td><span class="price-change positive">+11.5%</span></td>
+                        <td>
+                            <span class="stock-status out-stock">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M18 6L6 18"/>
+                                    <path d="M6 6l12 12"/>
+                                </svg>
+                                Habis
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Daging Sapi Limousin</td>
+                        <td>
+                            <span class="category-badge">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M20 16s-3 3-8 3-8-3-8-3"/>
+                                    <path d="M4 8s3-3 8-3 8 3 8 3"/>
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                </svg>
+                                Daging & Ikan
+                            </span>
+                        </td>
+                        <td>Rp 130.000</td>
+                        <td>Rp 145.000</td>
+                        <td><span class="price-change positive">+11.5%</span></td>
+                        <td>
+                            <span class="stock-status out-stock">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M18 6L6 18"/>
+                                    <path d="M6 6l12 12"/>
+                                </svg>
+                                Habis
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 Harga Pasar | All rights reserved.</p>
+    </footer>
+    <script>
+function updateDateTime() {
+    const now = new Date();
+    const options = { 
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'Asia/Jakarta'
+    };
+    const formatter = new Intl.DateTimeFormat('id-ID', options);
+    const formattedDate = formatter.format(now);
+    document.getElementById('updateTime').textContent = `Data harga di perbarui pada: ${formattedDate} WIB`;
+}
+
+// Update initially and then every second
+updateDateTime();
+setInterval(updateDateTime, 1000);
+</script>
+</body>
+</html>
