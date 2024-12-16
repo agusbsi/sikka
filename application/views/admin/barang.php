@@ -30,6 +30,14 @@
                                 <td><small><?= $f->barang ?></small></td>
                                 <td><small><?= $f->kategori ?></small></td>
                                 <td>
+                                    <button type="button" class="btn btn-sm btn-warning btn-edit"
+                                        data-bs-toggle="modal" data-bs-target="#modalEdit"
+                                        data-id="<?= $f->id; ?>"
+                                        data-barang="<?= $f->barang; ?>"
+                                        data-kategori="<?= $f->kategori; ?>"
+                                        title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
                                     <button type="button" class="btn btn-sm btn-danger btn-hapus" data-id="<?= $f->id; ?>" title="Hapus"><i class="bi bi-trash-fill"></i></button>
                                 </td>
                             </tr>
@@ -88,7 +96,34 @@
                             <input type="file" name="file" class="form-control" id="exampleInputFile" accept=".xlsx,.xls" required>
                         </div>
                         <hr>
-                        <a href="#">Download Template</a>
+                        <a href="<?= base_url('admin/Pasar/download_barang') ?>">Download Template</a>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal fade" id="modalEdit" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <form action="<?= base_url('admin/Pasar/barang_edit') ?>" method="post" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label for="pasar">Nama Barang *</label>
+                            <input type="hidden" class="form-control form-control-sm" id="idEdit" name="id" required>
+                            <input type="text" class="form-control form-control-sm" id="barangEdit" name="barang" placeholder="......" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="pasar">Kategori</label>
+                            <input type="text" class="form-control form-control-sm" id="kategoriEdit" name="kategori" placeholder="......">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -99,3 +134,34 @@
         </div>
     </div>
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.btn-edit').click(function(e) {
+            const id = this.getAttribute('data-id');
+            const barang = this.getAttribute('data-barang');
+            const kategori = this.getAttribute('data-kategori');
+            document.getElementById('idEdit').value = id;
+            document.getElementById('barangEdit').value = barang;
+            document.getElementById('kategoriEdit').value = kategori;
+        });
+        $('.btn-hapus').click(function(e) {
+            const id = this.getAttribute('data-id');
+            e.preventDefault();
+            Swal.fire({
+                title: 'Apakah anda yakin ?',
+                text: " Data yang dihapus tidak bisa di kembalikan lagi.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Yakin'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.href = "<?= base_url('admin/Pasar/hapus_barang/') ?>" + id;
+                }
+            })
+        });
+    });
+</script>

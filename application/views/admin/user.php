@@ -36,23 +36,28 @@
                                 <td><?= $f->telp ?></td>
                                 <td><?= $f->username ?></td>
                                 <td>
-                                    <span class="badge bg-<?= $f->status === 'Aktif' ? 'success' : 'secondary'; ?>">
-                                        <?= $f->status ?>
+                                    <span class="badge bg-<?= $f->status === '1' ? 'success' : 'secondary'; ?>">
+                                        <?= $f->status === '1' ? 'Aktif' : 'Non Aktif'; ?>
                                     </span>
                                 </td>
-                                <td><?= $f->role ?></td>
                                 <td>
-                                    <!-- Tombol Edit -->
-                                    <button type="button" class="btn btn-sm btn-warning btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit"
-                                        data-id="<?= $f->id; ?>" data-nama="<?= $f->nama; ?>" data-telp="<?= $f->telp; ?>"
-                                        data-username="<?= $f->username; ?>" data-status="<?= $f->status; ?>"
-                                        data-role="<?= $f->role; ?>" title="Edit">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <!-- Tombol Hapus -->
-                                    <button type="button" class="btn btn-sm btn-danger btn-hapus" data-id="<?= $f->id; ?>" title="Hapus">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
+                                    <?= $f->role === '1' ? 'Admin Utama' : 'User Publikasi'; ?>
+                                </td>
+                                <td>
+                                    <?php if ($this->session->userdata('id') == 1) { ?>
+                                        <!-- Tombol Edit -->
+                                        <button type="button" class="btn btn-sm btn-warning btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit"
+                                            data-id="<?= $f->id; ?>" data-nama="<?= $f->nama; ?>" data-telp="<?= $f->telp; ?>"
+                                            data-username="<?= $f->username; ?>" data-status="<?= $f->status; ?>"
+                                            data-role="<?= $f->role; ?>" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <!-- Tombol Hapus -->
+
+                                        <button type="button" class="btn btn-sm btn-danger btn-hapus" data-id="<?= $f->id; ?>" title="Hapus">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    <?php } ?>
                                 </td>
                             </tr>
                         <?php endforeach ?>
@@ -106,7 +111,7 @@
                                     <label for="role">Role *</label>
                                     <select name="role" class="form-control form-control-sm" required>
                                         <option value="1">Admin Utama</option>
-                                        <option value="2">Petugas</option>
+                                        <option value="2">User Publikasi</option>
                                     </select>
                                 </div>
                             </div>
@@ -157,8 +162,8 @@
                                 <div class="form-group mb-3">
                                     <label for="roleEdit">Role *</label>
                                     <select class="form-control form-control-sm" id="roleEdit" name="role" required>
-                                        <option value="Admin">Admin</option>
-                                        <option value="User">User</option>
+                                        <option value="1">Admin Utama</option>
+                                        <option value="2">User Publikasi</option>
                                     </select>
                                 </div>
                                 <div class="form-group mb-3">

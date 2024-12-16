@@ -12,7 +12,7 @@
                                     <i class="bi bi-pin-map-fill"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>145</h6>
+                                    <h6><?= $t_wisata->total ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                                     <i class="bi bi-calendar2-check-fill"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>145</h6>
+                                    <h6><?= $t_event->total ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
                                     <i class="bi bi-card-checklist"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>145</h6>
+                                    <h6><?= $t_berita->total ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                     <i class="bi bi-megaphone-fill"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>145</h6>
+                                    <h6><?= $t_pengumuman->total ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -72,7 +72,7 @@
                                     <i class="bi bi-book-half"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>145</h6>
+                                    <h6><?= $t_dokumen->total ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +87,7 @@
                                     <i class="bi bi-people-fill"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>145</h6>
+                                    <h6><?= $t_user->total ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -98,20 +98,25 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-
-                    <img src="<?= base_url('') ?>assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                    <h3>Kevin Anderson</h3>
+                    <img
+                        src="<?= !empty($bupati->foto)
+                                    ? base_url('assets/img/bupati/') . $bupati->foto . '?timestamp=' . time()
+                                    : 'https://via.placeholder.com/200?text=No+Image' ?>"
+                        alt="<?= !empty($bupati->foto) ? $bupati->foto : 'Default Image' ?>"
+                        class="rounded-circle"
+                        style="width:150px; max-height:150px;">
+                    <h3><?= $bupati->bupati ?></h3>
                     <span>Bupati saat ini</span>
                 </div>
             </div>
             <!-- Recent Activity -->
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Log Informasi Terbaru</h5>
+                    <h5 class="card-title">Log 5 Informasi Terbaru</h5>
                     <div class="activity">
                         <?php foreach ($log as $l): ?>
                             <div class="activity-item d-flex">
-                                <div class="activite-label">32 min</div>
+                                <div class="activite-label"></div>
                                 <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                                 <div class="activity-content">
                                     <a href="#" class="fw-bold text-dark"> <?= $l->user ?></a> <?= $l->aksi ?>

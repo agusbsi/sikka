@@ -28,6 +28,14 @@ class User extends CI_Controller
         $password = password_hash($this->input->post('password'), PASSWORD_BCRYPT);
         $role = $this->input->post('role');
 
+        // Cek apakah username sudah ada
+        $existing_user = $this->db->get_where('tb_user', ['username' => $username])->row();
+        if ($existing_user) {
+            tampil_alert('error', 'Gagal', 'Username sudah digunakan. Silakan pilih username lain.');
+            redirect(base_url('admin/user'));
+            return;
+        }
+
         // Konfigurasi upload foto
         $config['upload_path'] = './assets/img/user/';
         $config['allowed_types'] = 'jpg|jpeg|png';
@@ -47,6 +55,7 @@ class User extends CI_Controller
                 $error = $this->upload->display_errors();
                 tampil_alert('error', 'Gagal', $error);
                 redirect(base_url('admin/user'));
+                return;
             }
         }
 
@@ -62,6 +71,12 @@ class User extends CI_Controller
 
         // Simpan data ke tabel `tb_user`
         if ($this->db->insert('tb_user', $data)) {
+            $user_aktivitas = $this->session->userdata('nama');
+            $log = array(
+                'user' => $user_aktivitas,
+                'aksi' => "menambah data user baru." . $nama
+            );
+            $this->db->insert('tb_log', $log);
             tampil_alert('success', 'Berhasil', 'User baru berhasil ditambahkan.');
         } else {
             tampil_alert('error', 'Gagal', 'Terjadi kesalahan saat menyimpan data.');
@@ -73,18 +88,27 @@ class User extends CI_Controller
     public function edit()
     {
         $id = $this->input->post('id');
+        $username = $this->input->post('username'); // Ambil username dari input
         $data = [
             'nama' => $this->input->post('nama'),
             'telp' => $this->input->post('telp'),
-            'username' => $this->input->post('username'),
+            'username' => $username,
             'status' => $this->input->post('status'),
             'role' => $this->input->post('role')
         ];
 
+        // Cek apakah username sudah ada dan bukan milik user ini
+        $existing_user = $this->db->get_where('tb_user', ['username' => $username, 'id !=' => $id])->row();
+        if ($existing_user) {
+            tampil_alert('error', 'Gagal', 'Username sudah digunakan. Silakan pilih username lain.');
+            redirect(base_url('admin/user'));
+            return;
+        }
+
         // Jika ada input file foto
         if (!empty($_FILES['foto']['name'])) {
             $config = [
-                'upload_path' => 'assets/img/user/',
+                'upload_path' => './assets/img/user/',
                 'allowed_types' => 'jpg|jpeg|png',
                 'max_size' => '5048',
                 'file_name' => 'user_' . date('YmdHis'),
@@ -105,9 +129,16 @@ class User extends CI_Controller
 
         // Update ke database
         $this->db->update('tb_user', $data, ['id' => $id]);
+        $user_aktivitas = $this->session->userdata('nama');
+        $log = array(
+            'user' => $user_aktivitas,
+            'aksi' => "mengedit user"
+        );
+        $this->db->insert('tb_log', $log);
         tampil_alert('success', 'Berhasil', 'Data user berhasil diperbarui.');
         redirect(base_url('admin/user'));
     }
+
 
     public function hapus($id)
     {

@@ -52,4 +52,5 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $route['default_controller'] = 'Utama';
 $route['404_override'] = 'Utama/eror_404';
 $route['admin'] = 'Login';
+$route['api/harga'] = 'admin/Pasar/get_harga_pasar';
 $route['translate_uri_dashes'] = FALSE;

@@ -23,8 +23,9 @@
                         </select>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="foto">Foto / Video</label>
-                        <input type="file" class="form-control form-control-sm" name="foto" placeholder="......" accept="image/png, image/jpeg, image/jpg, video/mp4">
+                        <label for="foto">File dokumen</label>
+                        <input type="file" class="form-control form-control-sm" id="foto" name="foto" accept="image/png, image/jpeg, image/jpg, application/pdf">
+                        <small class="text-muted">Format yang diizinkan: JPG, JPEG, PNG, PDF. Maksimal 100MB.</small>
                     </div>
                     <div class="form-group mb-3">
                         <label for="isi">Isi pengumuman *</label>

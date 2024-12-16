@@ -46,8 +46,8 @@ class Pengumuman extends CI_Controller
         $jenis = "";
 
         // Konfigurasi upload file
-        $config['upload_path'] = './assets/img/pengumuman/';
-        $config['allowed_types'] = 'jpg|jpeg|png|mp4';
+        $config['upload_path'] = './assets/pdf/';
+        $config['allowed_types'] = 'jpg|jpeg|png|pdf';
         $config['max_size'] = '100000'; // Maksimal 100 MB
         $config['file_name'] = 'pengumuman_' . date('YmdHis');
         $config['overwrite'] = TRUE;
@@ -84,6 +84,12 @@ class Pengumuman extends CI_Controller
 
         // Simpan data ke tabel `tb_pengumuman`
         if ($this->db->insert('tb_pengumuman', $data)) {
+            $user_aktivitas = $this->session->userdata('nama');
+            $log = array(
+                'user' => $user_aktivitas,
+                'aksi' => "menambah data pengumuman." . $judul
+            );
+            $this->db->insert('tb_log', $log);
             tampil_alert('success', 'Berhasil', 'pengumuman baru berhasil ditambahkan.');
         } else {
             tampil_alert('error', 'Gagal', 'Terjadi kesalahan saat menyimpan data.');
@@ -121,6 +127,12 @@ class Pengumuman extends CI_Controller
         }
 
         $this->db->update('tb_pengumuman', $data, ['id' => $id]);
+        $user_aktivitas = $this->session->userdata('nama');
+        $log = array(
+            'user' => $user_aktivitas,
+            'aksi' => "Mengedit data pengumuman."
+        );
+        $this->db->insert('tb_log', $log);
         tampil_alert('success', 'Berhasil', 'Berhasil memperbarui data.');
         redirect(base_url('admin/pengumuman'));
     }
@@ -129,7 +141,7 @@ class Pengumuman extends CI_Controller
         $query = $this->db->query("SELECT konten FROM tb_pengumuman WHERE id = ?", array($id));
         $old_foto = $query->row()->konten;
         if (!empty($old_foto)) {
-            unlink('assets/img/pengumuman/' . $old_foto);
+            unlink('assets/pdf/' . $old_foto);
         }
         $this->db->delete('tb_pengumuman', ['id' => $id]);
         $user = $this->session->userdata('nama');

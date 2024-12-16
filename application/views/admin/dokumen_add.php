@@ -23,8 +23,8 @@
                         </select>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="foto">Foto / Video</label>
-                        <input type="file" class="form-control form-control-sm" name="foto" placeholder="......" accept="image/png, image/jpeg, image/jpg, video/mp4">
+                        <label for="foto">File Dokumen</label>
+                        <input type="file" class="form-control form-control-sm" name="foto" placeholder="......" accept="image/png, image/jpeg, image/jpg, video/mp4,application/pdf">
                     </div>
                     <div class="form-group mb-3">
                         <label for="isi">Isi dokumen *</label>

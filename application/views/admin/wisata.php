@@ -1,6 +1,5 @@
 <section>
     <div class="col-lg-12">
-
         <div class="card">
             <div class="card-header" style="display:flex; justify-content:flex-end">
                 <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#ExtralargeModal"><i class="bi bi-plus me-1"></i> Baru</button>
@@ -30,23 +29,42 @@
                                 <td>
                                     <div class="row position-relative">
                                         <?php if ($f->jenis == "Foto") { ?>
-                                            <img src="<?= base_url('assets/img/wisata/') . $f->konten ?>?timestamp=<?= time(); ?>" alt="<?= $f->nama ?>" class="rounded" style="width:260px;">
-                                        <?php } else { ?>
-                                            <div class="video-container" style="position: relative; width: 260px; max-height: 200px;">
-                                                <video class="video-element" style="width: 100%; max-height: 200px;" muted>
+                                            <img src="<?= base_url('assets/img/wisata/') . $f->konten ?>?timestamp=<?= time(); ?>" alt="<?= $f->nama ?>" class="rounded" style="max-width:150px;">
+                                        <?php } elseif ($f->jenis == "Video") { ?>
+                                            <div class="video-container" style="position: relative; max-width: 150px; max-height: 150px;">
+                                                <video class="video-element" style="width: 100%; max-height: 150px;" muted>
                                                     <source src="<?= base_url('assets/img/wisata/') . $f->konten ?>?timestamp=<?= time(); ?>" type="video/mp4">
                                                 </video>
                                                 <button class="play-button" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.5); color: #fff; border: none; padding: 10px 20px; cursor: pointer;">
                                                     Play
                                                 </button>
                                             </div>
+                                        <?php } elseif ($f->jenis == "Link") {
+                                            parse_str(parse_url($f->konten, PHP_URL_QUERY), $urlParams);
+                                            $youtubeId = $urlParams['v'] ?? '';
+                                        ?>
+                                            <div class="youtube-container" style="position: relative; max-width: 150px; max-height: 150px;">
+                                                <?php if (!empty($youtubeId)) { ?>
+                                                    <iframe src="https://www.youtube.com/embed/<?= $youtubeId ?>" frameborder="0" allowfullscreen style="width: 100%; height: 100%;"></iframe>
+                                                <?php } else { ?>
+                                                    <p>Invalid YouTube URL</p>
+                                                <?php } ?>
+                                            </div>
                                         <?php } ?>
                                     </div>
                                 </td>
+
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-warning btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit"
-                                        data-id="<?= $f->id; ?>" data-nama="<?= $f->nama; ?>"
-                                        title="Edit"><i class="bi bi-pencil-square"></i></button>
+                                    <button type="button" class="btn btn-sm btn-warning btn-edit"
+                                        data-bs-toggle="modal" data-bs-target="#modalEdit"
+                                        data-id="<?= $f->id; ?>"
+                                        data-nama="<?= $f->nama; ?>"
+                                        data-jenis="<?= $f->jenis; ?>"
+                                        data-konten="<?= $f->konten; ?>"
+                                        title="Edit">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+
                                     <button type="button" class="btn btn-sm btn-danger btn-hapus" data-id="<?= $f->id; ?>" title="Hapus"><i class="bi bi-trash-fill"></i></button>
                                 </td>
                             </tr>
@@ -71,9 +89,43 @@
                             <input type="text" class="form-control form-control-sm" name="wisata" placeholder="......" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="wisata">Foto / Video *</label>
-                            <input type="file" class="form-control form-control-sm" name="foto" placeholder="......" accept="image/png, image/jpeg, image/jpg, video/mp4" required>
+                            <label for="wisata">Tipe *</label>
+                            <select id="tipe" name="jenis" class="form-control form-control-sm" onchange="toggleInput()">
+                                <option selected="">pilih</option>
+                                <option value="Link">Link Youtube</option>
+                                <option value="media">Media Foto / Video</option>
+                            </select>
                         </div>
+
+                        <div id="link-input" class="form-group mb-3" style="display: none;">
+                            <label for="wisata">Link *</label>
+                            <input type="text" class="form-control form-control-sm" name="link" placeholder="......">
+                        </div>
+
+                        <div id="media-input" class="form-group mb-3" style="display: none;">
+                            <label for="wisata">Foto / Video *</label>
+                            <input type="file" class="form-control form-control-sm" name="foto" placeholder="......" accept="image/png, image/jpeg, image/jpg, video/mp4">
+                        </div>
+
+                        <script>
+                            function toggleInput() {
+                                const tipe = document.getElementById("tipe").value;
+                                const linkInput = document.getElementById("link-input");
+                                const mediaInput = document.getElementById("media-input");
+
+                                // Sembunyikan semua input terlebih dahulu
+                                linkInput.style.display = "none";
+                                mediaInput.style.display = "none";
+
+                                // Tampilkan input sesuai pilihan
+                                if (tipe === "Link") {
+                                    linkInput.style.display = "block";
+                                } else if (tipe === "media") {
+                                    mediaInput.style.display = "block";
+                                }
+                            }
+                        </script>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -93,15 +145,28 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group mb-3">
-                            <label for="wisata">Nama wisata *</label>
+                            <label for="wisata">Nama Wisata *</label>
                             <input type="hidden" class="form-control form-control-sm" id="idEdit" name="id" required>
                             <input type="text" class="form-control form-control-sm" id="namaEdit" name="wisata" placeholder="......" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="wisata">Foto</label>
-                            <input type="file" class="form-control form-control-sm" name="foto" placeholder="......" accept="image/png, image/jpeg, image/jpg, video/mp4">
-                            <small>( Kosongkan jika tidak ingin ganti foto )</small>
+                            <label for="jenis">Jenis Konten *</label>
+                            <select class="form-select form-control-sm" id="jenisEdit" name="jenis" required>
+                                <option value="Foto">Foto</option>
+                                <option value="Video">Video</option>
+                                <option value="Link">Link</option>
+                            </select>
                         </div>
+                        <div id="inputLink" class="form-group mb-3 d-none">
+                            <label for="kontenLink">Link *</label>
+                            <input type="text" class="form-control form-control-sm" id="kontenLink" name="konten" placeholder="Masukkan URL YouTube">
+                        </div>
+                        <div id="inputFile" class="form-group mb-3 d-none">
+                            <label for="file">Upload File *</label>
+                            <input type="file" class="form-control form-control-sm" id="fileEdit" name="file" accept="image/png, image/jpeg, image/jpg, video/mp4">
+                            <small class="form-text text-muted">Kosongkan jika tidak ingin mengganti file.</small>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -111,16 +176,70 @@
             </form>
         </div>
     </div>
+
+
 </section>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.btn-edit').on('click', function() {
-            const id = this.getAttribute('data-id');
-            const nama = this.getAttribute('data-nama');
-            document.getElementById('idEdit').value = id;
-            document.getElementById('namaEdit').value = nama;
+        document.querySelectorAll('.btn-edit').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const nama = this.getAttribute('data-nama');
+                const jenis = this.getAttribute('data-jenis');
+                const konten = this.getAttribute('data-konten');
+
+                document.getElementById('idEdit').value = id;
+                document.getElementById('namaEdit').value = nama;
+                document.getElementById('jenisEdit').value = jenis;
+
+                const inputLink = document.getElementById('inputLink');
+                const inputFile = document.getElementById('inputFile');
+                const kontenLink = document.getElementById('kontenLink');
+                const fileEdit = document.getElementById('fileEdit');
+
+                // Reset visibility and required attributes
+                inputLink.classList.add('d-none');
+                inputFile.classList.add('d-none');
+                kontenLink.removeAttribute('required');
+                fileEdit.removeAttribute('required');
+
+                if (jenis === 'Link') {
+                    inputLink.classList.remove('d-none');
+                    kontenLink.setAttribute('required', 'required');
+                    kontenLink.value = konten;
+                } else {
+                    inputFile.classList.remove('d-none');
+                    fileEdit.setAttribute('required', 'required');
+                }
+            });
         });
+
+        document.getElementById('jenisEdit').addEventListener('change', function() {
+            const jenis = this.value;
+
+            const inputLink = document.getElementById('inputLink');
+            const inputFile = document.getElementById('inputFile');
+            const kontenLink = document.getElementById('kontenLink');
+            const fileEdit = document.getElementById('fileEdit');
+
+            // Reset visibility and required attributes
+            inputLink.classList.add('d-none');
+            inputFile.classList.add('d-none');
+            kontenLink.removeAttribute('required');
+            fileEdit.removeAttribute('required');
+
+            if (jenis === 'Link') {
+                inputLink.classList.remove('d-none');
+                kontenLink.setAttribute('required', 'required');
+            } else {
+                inputFile.classList.remove('d-none');
+                fileEdit.setAttribute('required', 'required');
+            }
+        });
+
+
+
         $('.btn-hapus').click(function(e) {
             const id = this.getAttribute('data-id');
             e.preventDefault();

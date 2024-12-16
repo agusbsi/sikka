@@ -13,9 +13,7 @@ class Template
 	{
 		$this->CI = &get_instance();
 		$role = $this->CI->session->userdata('role');
-		if ($role == 1) {
-			$sidebar = "sidebar";
-		}
+		$sidebar = "sidebar";
 		$this->set('contents', $this->CI->load->view($view, $view_data, TRUE));
 		$this->set('sidebar', $sidebar);
 		return $this->CI->load->view($template, $this->template_data, $return);

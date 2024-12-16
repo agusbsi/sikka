@@ -9,6 +9,7 @@ class Login extends CI_Controller
 	}
 	public function index()
 	{
+		$data['setting'] = $this->db->query("SELECT * from tb_pengaturan where id = ?", ["1"])->row();
 		$data['token_generate'] = $this->token_generate();
 		$this->session->set_userdata($data);
 		$this->load->view('login', $data);
@@ -58,6 +59,6 @@ class Login extends CI_Controller
 	public function logout()
 	{
 		$this->session->sess_destroy();
-		redirect(base_url());
+		redirect(base_url('/admin'));
 	}
 }

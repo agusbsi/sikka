@@ -60,3 +60,26 @@
 
     </div>
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.btn-hapus').click(function(e) {
+            const id = this.getAttribute('data-id');
+            e.preventDefault();
+            Swal.fire({
+                title: 'Apakah anda yakin ?',
+                text: " Data yang dihapus tidak bisa di kembalikan lagi.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Yakin'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.href = "<?= base_url('admin/Dokumen/hapus/') ?>" + id;
+                }
+            })
+        });
+    });
+</script>

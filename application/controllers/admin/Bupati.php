@@ -22,12 +22,13 @@ class Bupati extends CI_Controller
     public function baru()
     {
         $bupati = $this->input->post('bupati');
+        $kategori = $this->input->post('kategori');
         $jabatan = $this->input->post('jabatan');
         $deskripsi = $this->input->post('deskripsi');
         $config['upload_path'] = 'assets/img/bupati/';
         $config['allowed_types'] = 'jpg|jpeg|png';
         $config['max_size'] = '5048';
-        $config['file_name'] = 'bupati_' . date('Y-m-d');
+        $config['file_name'] = 'bupati_' . date('Y-m-d-h-i-s');
         $config['overwrite'] = TRUE;
         $config['remove_spaces'] = TRUE;
         $this->load->library('upload', $config);
@@ -41,10 +42,17 @@ class Bupati extends CI_Controller
             $data = array(
                 'nama' => $bupati,
                 'jabatan' => $jabatan,
+                'kategori' => $kategori,
                 'foto' => $foto,
                 'deskripsi' => $deskripsi
             );
             $this->db->insert('tb_bupati', $data);
+            $user_aktivitas = $this->session->userdata('nama');
+            $log = array(
+                'user' => $user_aktivitas,
+                'aksi' => "Menambah data bupati." . $bupati
+            );
+            $this->db->insert('tb_log', $log);
             tampil_alert('success', 'Berhasil', 'Berhasil menambahkan data baru.');
             redirect(base_url('admin/Bupati'));
         }
@@ -55,6 +63,7 @@ class Bupati extends CI_Controller
         $data = [
             'nama' => $this->input->post('bupati'),
             'jabatan' => $this->input->post('jabatan'),
+            'kategori' => $this->input->post('kategori'),
             'deskripsi' => $this->input->post('deskripsi')
         ];
 
@@ -63,7 +72,7 @@ class Bupati extends CI_Controller
                 'upload_path' => 'assets/img/bupati/',
                 'allowed_types' => 'jpg|jpeg|png',
                 'max_size' => '5048',
-                'file_name' => 'bupati_' . date('Y-m-d'),
+                'file_name' => 'bupati_' . date('Y-m-d-h-i-s'),
                 'overwrite' => TRUE,
                 'remove_spaces' => TRUE
             ];
@@ -80,6 +89,12 @@ class Bupati extends CI_Controller
         }
 
         $this->db->update('tb_bupati', $data, ['id' => $id]);
+        $user_aktivitas = $this->session->userdata('nama');
+        $log = array(
+            'user' => $user_aktivitas,
+            'aksi' => "Mengedit data bupati."
+        );
+        $this->db->insert('tb_log', $log);
         tampil_alert('success', 'Berhasil', 'Berhasil memperbarui data.');
         redirect(base_url('admin/Bupati'));
     }
@@ -91,9 +106,9 @@ class Bupati extends CI_Controller
             unlink('assets/img/bupati/' . $old_foto);
         }
         $this->db->delete('tb_bupati', ['id' => $id]);
-        $user = $this->session->userdata('nama');
+        $user_aktivitas = $this->session->userdata('nama');
         $log = array(
-            'user' => $user,
+            'user' => $user_aktivitas,
             'aksi' => "Menghapus data bupati."
         );
         $this->db->insert('tb_log', $log);

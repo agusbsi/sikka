@@ -14,6 +14,7 @@
                                 NO
                             </th>
                             <th>Berita</th>
+                            <th>Dibaca</th>
                             <th>Tanggal</th>
                             <th>Pembuat</th>
                             <th>Menu</th>
@@ -39,12 +40,13 @@
                                                 style="width:70px; max-height:70px;">
                                         </div>
                                         <div class="col-md-9">
-                                            <p class="mb-0" style="font-size: 14px; font-weight: bold;"><?= $f->judul ?></p>
+                                            <p class="mb-0" style="font-size: 12px; font-weight: bold;"><?= $f->judul ?></p>
                                             <small><?= $f->kategori ?></small>
                                         </div>
                                     </div>
 
                                 </td>
+                                <td><small><?= $f->dibaca ?> X</small></td>
                                 <td><small><?= date('d M Y  H:i:s', strtotime($f->dibuat)) ?></small></td>
                                 <td><small><?= $f->pembuat ?></small></td>
                                 <td>
@@ -57,6 +59,28 @@
                 </table>
             </div>
         </div>
-
     </div>
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.btn-hapus').click(function(e) {
+            const id = this.getAttribute('data-id');
+            e.preventDefault();
+            Swal.fire({
+                title: 'Apakah anda yakin ?',
+                text: " Data yang dihapus tidak bisa di kembalikan lagi.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Yakin'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.href = "<?= base_url('admin/Berita/hapus/') ?>" + id;
+                }
+            })
+        });
+    });
+</script>

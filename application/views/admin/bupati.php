@@ -14,6 +14,7 @@
                                 NO
                             </th>
                             <th>Nama Bupati</th>
+                            <th>kategori</th>
                             <th>Jabatan</th>
                             <th>Deskripsi</th>
                             <th>Menu</th>
@@ -33,16 +34,19 @@
                                         <?= $f->nama ?>
                                     </div>
                                 </td>
+                                <td>
+                                    <?= $f->kategori == 0 ? "Bupati" : ($f->kategori == 1 ? "Wakil Bupati" : "Pejabat") ?>
+                                </td>
                                 <td><?= $f->jabatan ?></td>
                                 <td>
                                     <small>
-                                        <?= $f->deskripsi ?>
+                                        <?= strlen($f->deskripsi) > 50 ? substr($f->deskripsi, 0, 50) . '...' : $f->deskripsi ?>
                                     </small>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-warning btn-edit" data-bs-toggle="modal" data-bs-target="#modalEdit"
                                         data-id="<?= $f->id; ?>" data-nama="<?= $f->nama; ?>"
-                                        data-jabatan="<?= $f->jabatan; ?>" data-deskripsi="<?= $f->deskripsi; ?>" title="Edit"><i class="bi bi-pencil-square"></i></button>
+                                        data-jabatan="<?= $f->jabatan; ?>" data-kategori="<?= $f->kategori; ?>" data-deskripsi="<?= $f->deskripsi; ?>" title="Edit"><i class="bi bi-pencil-square"></i></button>
                                     <button type="button" class="btn btn-sm btn-danger btn-hapus" data-id="<?= $f->id; ?>" title="Hapus"><i class="bi bi-trash-fill"></i></button>
                                 </td>
                             </tr>
@@ -67,6 +71,15 @@
                                 <div class="form-group mb-3">
                                     <label for="bupati">Nama Bupati *</label>
                                     <input type="text" class="form-control form-control-sm" name="bupati" placeholder="......" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="bupati">Kategori *</label>
+                                    <select name="kategori" class="form-control form-control-sm" required>
+                                        <option value="">Pilih</option>
+                                        <option value="0">Bupati</option>
+                                        <option value="1">Wakil Bupati</option>
+                                        <option value="2">Pejabat</option>
+                                    </select>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="bupati">Jabatan *</label>
@@ -110,6 +123,15 @@
                                     <input type="text" class="form-control form-control-sm" id="namaEdit" name="bupati" placeholder="......" required>
                                 </div>
                                 <div class="form-group mb-3">
+                                    <label for="bupati">Kategori *</label>
+                                    <select id="kategoriEdit" name="kategori" class="form-control form-control-sm" required>
+                                        <option value="">Pilih</option>
+                                        <option value="0">Bupati</option>
+                                        <option value="1">Wakil Bupati</option>
+                                        <option value="2">Pejabat</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3">
                                     <label for="bupati">Jabatan *</label>
                                     <input type="text" class="form-control form-control-sm" id="jabatanEdit" name="jabatan" placeholder="......" required>
                                 </div>
@@ -143,10 +165,12 @@
             const id = this.getAttribute('data-id');
             const nama = this.getAttribute('data-nama');
             const jabatan = this.getAttribute('data-jabatan');
+            const kategori = this.getAttribute('data-kategori');
             const deskripsi = this.getAttribute('data-deskripsi');
             document.getElementById('idEdit').value = id;
             document.getElementById('namaEdit').value = nama;
             document.getElementById('jabatanEdit').value = jabatan;
+            document.getElementById('kategoriEdit').value = kategori;
             document.getElementById('deskripsiEdit').value = deskripsi;
         });
         $('.btn-hapus').click(function(e) {

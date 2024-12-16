@@ -47,7 +47,7 @@ class Dokumen extends CI_Controller
 
         // Konfigurasi upload file
         $config['upload_path'] = './assets/img/dokumen/';
-        $config['allowed_types'] = 'jpg|jpeg|png|mp4';
+        $config['allowed_types'] = 'jpg|jpeg|png|mp4|pdf';
         $config['max_size'] = '100000'; // Maksimal 100 MB
         $config['file_name'] = 'dokumen_' . date('YmdHis');
         $config['overwrite'] = TRUE;
@@ -84,6 +84,12 @@ class Dokumen extends CI_Controller
 
         // Simpan data ke tabel `tb_dokumen`
         if ($this->db->insert('tb_dokumen', $data)) {
+            $user_aktivitas = $this->session->userdata('nama');
+            $log = array(
+                'user' => $user_aktivitas,
+                'aksi' => "Menambah data dokumen." . $judul
+            );
+            $this->db->insert('tb_log', $log);
             tampil_alert('success', 'Berhasil', 'dokumen baru berhasil ditambahkan.');
         } else {
             tampil_alert('error', 'Gagal', 'Terjadi kesalahan saat menyimpan data.');
@@ -121,6 +127,12 @@ class Dokumen extends CI_Controller
         }
 
         $this->db->update('tb_dokumen', $data, ['id' => $id]);
+        $user_aktivitas = $this->session->userdata('nama');
+        $log = array(
+            'user' => $user_aktivitas,
+            'aksi' => "Menedit data dokumen."
+        );
+        $this->db->insert('tb_log', $log);
         tampil_alert('success', 'Berhasil', 'Berhasil memperbarui data.');
         redirect(base_url('admin/dokumen'));
     }

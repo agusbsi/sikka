@@ -17,6 +17,7 @@
                         <label for="kategori">Kategori *</label>
                         <select name="kategori" class="form-control form-control-sm" required>
                             <option value=""> Pilih </option>
+                            <option value="kontribusi"> kontribusi SIKKA</option>
                             <option value="Olahraga"> Olahraga</option>
                             <option value="Politik"> Politik</option>
                             <option value="Finance"> Finance</option>

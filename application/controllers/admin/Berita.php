@@ -84,6 +84,12 @@ class Berita extends CI_Controller
 
         // Simpan data ke tabel `tb_berita`
         if ($this->db->insert('tb_berita', $data)) {
+            $user_aktivitas = $this->session->userdata('nama');
+            $log = array(
+                'user' => $user_aktivitas,
+                'aksi' => "Menambah Berita baru" . $judul
+            );
+            $this->db->insert('tb_log', $log);
             tampil_alert('success', 'Berhasil', 'Berita baru berhasil ditambahkan.');
         } else {
             tampil_alert('error', 'Gagal', 'Terjadi kesalahan saat menyimpan data.');
@@ -121,13 +127,19 @@ class Berita extends CI_Controller
         }
 
         $this->db->update('tb_berita', $data, ['id' => $id]);
+        $user_aktivitas = $this->session->userdata('nama');
+        $log = array(
+            'user' => $user_aktivitas,
+            'aksi' => "Mengedit data berita ."
+        );
+        $this->db->insert('tb_log', $log);
         tampil_alert('success', 'Berhasil', 'Berhasil memperbarui data.');
         redirect(base_url('admin/berita'));
     }
     public function hapus($id)
     {
-        $query = $this->db->query("SELECT konten FROM tb_berita WHERE id = ?", array($id));
-        $old_foto = $query->row()->konten;
+        $query = $this->db->query("SELECT file FROM tb_berita WHERE id = ?", array($id));
+        $old_foto = $query->row()->file;
         if (!empty($old_foto)) {
             unlink('assets/img/berita/' . $old_foto);
         }

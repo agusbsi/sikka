@@ -1,3 +1,9 @@
+<?php
+$setting = $this->db->query("SELECT * from tb_pengaturan where id = ?", [1])->row();
+$id = $this->session->userdata('id');
+$role = $this->session->userdata('role');
+$user = $this->db->query("SELECT * from tb_user where id = ?", [$id])->row();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,8 +14,7 @@
   <title>Admin Panel | Kabupaten SIKKA</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
-  <link href="<?= base_url('') ?>assets/img/favicon.png" rel="icon">
-  <link href="<?= base_url('') ?>assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="<?= base_url('assets/img/') . $setting->logo . '?timestamp=' . time() ?>" rel="icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -25,12 +30,23 @@
 </head>
 
 <body>
+  <?php
+  if ($this->session->flashdata('type')) { ?>
+    <script>
+      var type = "<?= $this->session->flashdata('type'); ?>"
+      var title = "<?= $this->session->flashdata('title'); ?>"
+      var text = "<?= $this->session->flashdata('text'); ?>"
+      Swal.fire(title, text, type)
+    </script>
+  <?php } ?>
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
-        <img src="<?= base_url('') ?>assets/img/logo.png" alt="">
-        <span class="d-none d-lg-block">SIKKA</span>
+        <?php if (!empty($setting->logo)) { ?>
+          <img src="<?= base_url('assets/img/') . $setting->logo . '?timestamp=' . time() ?>" alt="<?= $setting->logo ?>">
+        <?php } ?>
+        <span class="d-none d-lg-block"><?= $setting->nama ?></span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -45,44 +61,29 @@
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="<?= base_url('') ?>assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <?php if (!empty($user->foto)) { ?>
+              <img src="<?= base_url('assets/img/user/' . $user->foto . '?timestamp=' . time()) ?>" alt="Profile" class="rounded-circle">
+            <?php } ?>
             <span class="d-none d-md-block dropdown-toggle ps-2"><?= $this->session->userdata('nama') ?></span>
           </a>
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
               <h6><?= $this->session->userdata('nama') ?></h6>
-              <span>Web Designer</span>
+              <span><?= $role = 1 ? "Admin Utama" : "User Publikasi" ?></span>
             </li>
             <li>
               <hr class="dropdown-divider">
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="<?= base_url('admin/Profil') ?>">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
             </li>
             <li>
               <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-gear"></i>
-                <span>Account Settings</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                <i class="bi bi-question-circle"></i>
-                <span>Need Help?</span>
-              </a>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -110,7 +111,7 @@
 
   <main id="main" class="main">
     <div class="pagetitle">
-      <h1><?= ucwords(str_replace("_", " ", $this->uri->segment('2'))); ?></h1>
+      <h1><?= $title ?></h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="<?= base_url() . $this->uri->segment('1') . "/" . $this->uri->segment('2') ?>"><?= ucwords(str_replace("_", " ", $this->uri->segment('2'))); ?></a></li>

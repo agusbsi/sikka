@@ -8,8 +8,8 @@
   <meta content="" name="description">
   <meta content="" name="keywords">
   <!-- Favicons -->
-  <link href="<?= base_url('') ?>assets/img/favicon.png" rel="icon">
-  <link href="<?= base_url('') ?>assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="<?= base_url('assets/img/') . $setting->logo . '?timestamp=' . time() ?>" rel="icon">
+  <link href="<?= base_url('assets/img/') . $setting->logo . '?timestamp=' . time() ?>" rel="apple-touch-icon">
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -43,8 +43,10 @@
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
               <div class="d-flex justify-content-center py-4">
                 <a href="index.html" class="logo d-flex align-items-center w-auto">
-                  <img src="<?= base_url('') ?>assets/img/logo.png" alt="">
-                  <span class="d-none d-lg-block">SIKKA</span>
+                  <?php if (!empty($setting->logo)) { ?>
+                    <img src="<?= base_url('assets/img/') . $setting->logo . '?timestamp=' . time() ?>" alt="<?= $setting->logo ?>">
+                  <?php } ?>
+                  <span class="d-none d-lg-block"><?= $setting->nama ?></span>
                 </a>
               </div>
               <div class="card mb-3">
